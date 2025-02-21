@@ -26,7 +26,6 @@ class Output(BaseModel):
 # Create a controller and define a custom action
 controller = Controller(output_model=Output)
 
-
 Laminar.initialize(project_api_key=os.getenv('LMNR_PROJECT_API_KEY'))
 
 
@@ -36,11 +35,23 @@ async def open_website(url: str, browser: Browser):
     await page.goto(url)
     return ActionResult(extracted_content='Website opened')
 
+
 @controller.action('Get page title')
 async def get_page_title(browser: Browser):
     page = await browser.get_current_page()
     title = await page.title()
     return ActionResult(extracted_content=title)
+
+
+@controller.action('count Total Top Wiki Pages carousel cards')
+async def count_total_carousel_cards(browser: Browser):
+    page = await browser.get_current_page()
+
+    # CSS selector targeting the Top Wiki Pages carousel cards
+    selector = '.wds-widget-frame:has(h2.wds-widget-frame__title[title="Top Wiki Pages"]) .wds-card-link'
+
+    card_count = await page.locator(selector).count()
+    return ActionResult(extracted_content=str(card_count))
 
 
 async def main():
@@ -50,7 +61,7 @@ async def main():
         1. Open website https://www.fandom.com/universe/cyberpunk 
         2. give me its title
         3. count total cards in Top Wiki Pages carousel 
-        4. count total not visible cards in Top Wiki Pages carousel  
+        4. count total visible cards in Top Wiki Pages carousel  
         """,
         llm=llm,
         browser=browser,
@@ -68,8 +79,8 @@ async def main():
 
         print('\n--------------------------------')
         print(f'Title:            {parsed.page_title}')
-        print(f'URL:              {parsed.total_cards_top_wiki}')
-        print(f'Comments:         {parsed.visible_cards_top_wiki}')
+        print(f'Total cards:              {parsed.total_cards_top_wiki}')
+        print(f'Visible cards:         {parsed.visible_cards_top_wiki}')
     else:
         print('No result')
 

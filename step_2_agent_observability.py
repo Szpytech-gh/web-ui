@@ -34,7 +34,7 @@ async def main():
         1. Open website https://www.fandom.com/universe/cyberpunk 
         2. give me its title
         3. count total cards in Top Wiki Pages carousel 
-        4. count total visible cards in Top Wiki Pages carousel  
+        4. using vision count total visible cards in Top Wiki Pages carousel  
         """,
         llm=llm,
         browser=browser,
